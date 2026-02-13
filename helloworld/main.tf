@@ -12,6 +12,6 @@ terraform {
 
 # reference: https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file.html
 resource "local_file" "demo" {
-  content  = "hi. how are you?"
+  content  = "hi. how are you? and you?"
   filename = "helloworld.txt"
 }
