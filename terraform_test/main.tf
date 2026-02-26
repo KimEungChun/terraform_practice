@@ -12,7 +12,8 @@ terraform {
 # Provider (Seoul)
 ############################################
 provider "aws" {
-  region = "ap-northeast-2"
+  region  = var.region
+  profile = "work"
 }
 
 ############################################
