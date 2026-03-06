@@ -1,0 +1,32 @@
+# 예시 tfvars: 실제 사용 시 terraform.tfvars 로 복사 후 값 수정
+project = "devops"
+
+# Your public IP:
+my_ip_cidr = "1.2.3.4/32"
+
+# Existing EC2 KeyPair:
+key_name = "gun2"
+
+# VPC/Subnets
+vpc_cidr = "10.0.0.0/16"
+azs = ["ap-northeast-2a", "ap-northeast-2c"]
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.101.0/24", "10.0.102.0/24"]
+
+# ECR repos
+ecr_repositories = ["my-app"]
+
+# EKS
+eks_cluster_name = "devops-eks"
+eks_cluster_version = "1.29"
+node_group_instance_types = ["t3.medium"]
+node_group_desired_size = 2
+node_group_min_size = 1
+node_group_max_size = 4
+
+enable_irsa = true
+
+# EC2
+bastion_instance_type = "t3.small"
+jenkins_instance_type = "t3.medium"
+create_jenkins_instance = true

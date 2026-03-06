@@ -1,0 +1,24 @@
+ingress:
+  enabled: true
+  ingressClassName: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-2:467606240901:certificate/248292f9-a31b-46b7-be91-b1e23a2b9a70
+    external-dns.alpha.kubernetes.io/hostname: grafana.choilab.xyz
+
+  hosts:
+  - grafana.choilab.xyz
+
+# reference: https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-onboard-query-grafana-7.3.html#AMP-onboard-query-grafana-7.3-IRSA
+serviceAccount:
+  name: "grafana-irsa-sa"
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::467606240901:role/eks-from-terraform-grafana-irsa"
+
+# reference: https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-onboard-query-grafana-7.3.html#AMP-onboard-query-grafana-7.3-IRSA
+grafana.ini:
+  auth:
+    sigv4_auth_enabled: true

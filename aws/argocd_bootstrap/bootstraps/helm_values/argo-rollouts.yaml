@@ -1,0 +1,53 @@
+controller:
+  metrics:
+    enabled: true
+
+dashboard:
+  enabled: false
+  # ingress:
+  #   enabled: true
+  #   annotations:
+  #     alb.ingress.kubernetes.io/scheme: internet-facing
+  #     alb.ingress.kubernetes.io/target-type: ip
+  #     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+  #     alb.ingress.kubernetes.io/ssl-redirect: '443'
+  #     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-2:467606240901:certificate/248292f9-a31b-46b7-be91-b1e23a2b9a70
+  #     external-dns.alpha.kubernetes.io/hostname: argo-rollouts.choilab.xyz
+  #   hosts:
+  #   - argo-rollouts.choilab.xyz
+
+
+notifications:
+  notifiers:
+    service.webhook.devlake: |
+      url: https://devlake.choilab.xyz
+      headers:
+      - name: Authorization
+        value: "Bearer WjkYJlhScTgaqpGeAEUvDiaRxnpjCTQmcPgU69fDDd8U0t8QUoYM5OWdaYBMlrDBlrVkqR74ZU4OdDUK4Sv5UWldFKnZx5MWefyUBzvHYusmdTbN5IqAHAdzGYsVlIDt"
+
+  templates:
+    # time function reference: https://docs.gomplate.ca/functions/time/
+    template.devlake-webhook: |
+      webhook:
+        devlake:
+          method: POST
+          path: /api/rest/plugins/webhook/connections/1/deployments
+          body: |
+            {
+              "pipeline_id":"{{.rollout.status.stableRS}}",
+              "repo_url":"https://github.com/choisungwook/terraform_practice",
+              "commit_sha":"",
+              "display_title":"test",
+              "start_time":"",
+              "result":"{{.rollout.status.phase}}"
+            }
+
+  # reference: https://argo-rollouts.readthedocs.io/en/stable/features/notifications/#default-trigger-templates
+  triggers:
+    trigger.on-rollout-promote-success: |
+      - send: [devlake-webhook]
+        when: rollout.status.phase == "Healthy"
+    trigger.on-rollout-completed: |
+      - send: [devlake-webhook]
+    trigger.on-rollout-step-completed: |
+      - send: [devlake-webhook]
